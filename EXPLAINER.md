@@ -75,13 +75,13 @@ Further, even simplified geometry (such as bounding boxes) can provide informati
 
 ##### Historical Real-World Geometry
 
-<span style="color:#24292e;">An additional privacy concern with world geometry data applies to AR subsystems that continuously improve their map of world geometry during system use, so as to not require the user to manually rescan their environment again each time they enter a new app or return to an existing app.</span>
+An additional privacy concern with world geometry data applies to AR subsystems that continuously improve their map of world geometry during system use, so as to not require the user to manually rescan their environment again each time they enter a new app or return to an existing app.
 
-<span style="color:#24292e;">On such systems, some geometry data that is available from the subsystem may have been captured outside of a user's current user agent session, perhaps in previous device sessions. Processed world geometry can thus create novel privacy concerns that go beyond raw camera data, as they can pull in _<span style="color:#24292e;">historical<span style="color:#24292e;"> perception of the environment.</span></span>_</span>
+On such systems, some geometry data that is available from the subsystem may have been captured outside of a user's current user agent session, perhaps in previous device sessions. Processed world geometry can thus create novel privacy concerns that go beyond raw camera data, as they can pull in _historical_ perception of the environment.
 
-<span style="color:#24292e;">This is in conflict with user expectations for privacy and security. When a user enables their webcam, it is generally understood that the page can see the user's surroundings in the present, but any objects put away prior to the webcam session will stay private. In contrast, an AR subsystem that captures world geometry during general usage might still have information about objects that are not presently visible. It is unclear whether users will understand that such historical data exists and whether such data is available to the site.</span>
+This is in conflict with user expectations for privacy and security. When a user enables their webcam, it is generally understood that the page can see the user's surroundings in the present, but any objects put away prior to the webcam session will stay private. In contrast, an AR subsystem that captures world geometry during general usage might still have information about objects that are not presently visible. It is unclear whether users will understand that such historical data exists and whether such data is available to the site.
 
-<span style="color:#24292e;">Further, on such systems the geometry generated during a browsing session may persist within the subsystem beyond the browsing session, potentially allowing other applications or websites to access that data. This is in conflict with user expectations for privacy and security, where it is generally expected that data generated on a web page is not available to other sites or applications.</span>
+Further, on such systems the geometry generated during a browsing session may persist within the subsystem beyond the browsing session, potentially allowing other applications or websites to access that data. This is in conflict with user expectations for privacy and security, where it is generally expected that data generated on a web page is not available to other sites or applications.
 
 
 #### Possible Mitigations for Real-World Geometry Considerations
@@ -107,11 +107,11 @@ _<span style="color:#24292e;">TODO: Provide examples<span style="color:#24292e;"
 ##### Filtering
 On systems where historical geometry is available beyond the scope of the current session, user agents may wish to filter what data is available to sites to only include data present in the user's current browsing session.
 
-For example, a user agent might limit the distance and location of data that is available, to only that _near _the user. This approach has limitations and might still expose data that is not visible to the user (for example, geometry for objects directly behind a wall in the user's space). This approach may also limit AR use cases (for example, in a large room or outdoors, some geometry might be beyond the allowable distance).
+For example, a user agent might limit the distance and location of data that is available, to only that _near_ the user. This approach has limitations and might still expose data that is not visible to the user (for example, geometry for objects directly behind a wall in the user's space). This approach may also limit AR use cases (for example, in a large room or outdoors, some geometry might be beyond the allowable distance).
 
-Similarly, a user agent might limit the scope of data to only that _visible _in the user's view, or data about geometry that has actually been seen by the user in the current session. For example, a hit testing API might limit results to those visible in the current view by only providing the closest hit-test result (thus not including anything that is occluded) and by restricting rays to those within the user's viewport, originating from the device pose. However, this approach may not guarantee that historical data is excluded. For example, if there is not yet any geometry information known about the visible user's space, then hit tests may return results from known, adjacent areas without a way of disambiguating whether those results are visible or not.
+Similarly, a user agent might limit the scope of data to only that _visible_ in the user's view, or data about geometry that has actually been seen by the user in the current session. For example, a hit testing API might limit results to those visible in the current view by only providing the closest hit-test result (thus not including anything that is occluded) and by restricting rays to those within the user's viewport, originating from the device pose. However, this approach may not guarantee that historical data is excluded. For example, if there is not yet any geometry information known about the visible user's space, then hit tests may return results from known, adjacent areas without a way of disambiguating whether those results are visible or not.
 
-<span style="color:#24292e;">The approach that a user agent takes will likely depend upon the mechanisms offered by the underlying AR system. For example, a subsystem may have mechanisms for filtering real-world geometry to that seen within the current session, or may have its own context management system for managing access to previously mapped areas such as rooms.</span>
+The approach that a user agent takes will likely depend upon the mechanisms offered by the underlying AR system. For example, a subsystem may have mechanisms for filtering real-world geometry to that seen within the current session, or may have its own context management system for managing access to previously mapped areas such as rooms.
 
 
 ##### Clearing Data
@@ -122,14 +122,66 @@ For example, at session start the user agent might clear any historical data pre
 
 Similarly, the user agent might clear any real-world geometry data generated by the browsing session when the session ends. This may be complicated if the underlying AR subsystem has has merged some of this geometry with its larger real world understanding; for example, merging newly discovered floor planes into a larger plane that includes historical data.
 
-<span style="color:#24292e;">The approach that a user agent takes will likely depend upon the mechanisms offered by the underlying AR system. For example, a subsystem may have mechanisms for sandboxing real-world geometry between app sessions.</span>
+The approach that a user agent takes will likely depend upon the mechanisms offered by the underlying AR system. For example, a subsystem may have mechanisms for sandboxing real-world geometry between app sessions.
 
 ### Object or Image Identification
 
+Another type of real-world data access is the ability to detect objects or images in the scene. Such identification might include 3D object detection (e.g. identifying and tracking a 'dining room table') or 2D planar image detection (e.g. identifying and tracking a poster of [Rick Astley](https://www.youtube.com/watch?v=dQw4w9WgXcQ)).
+
 #### Threat Vectors
-...
-#### Possible Mitigations
-...
+
+Depending upon how the API is structured, the user may not know what objects the site is looking for. For example, if an API accepts a set of reference images and attempts to match them in the real world, the user likely would not know what those references images are.
+
+Using such APIs, the site could gain information about what is present in the user's environment, such as:
+
+*   Detecting that there is high-denomination money
+*   Detecting valuable furniture or electronics
+*   Detecting publicly visible objects or images such as storefront signs
+
+This capability exposes several threat vectors including:
+
+
+###### Location Identification
+*   Storefront signs, or similarly known images, might allow a site to determine a user's location
+*   Publicly visible QR or barcodes could allow a site to track user location
+*   A unique configuration of a set of known objects (e.g. picnic tables) might allow a site to recognize the user's location (by knowing the configuration of picnic tables in parks)
+
+
+###### User Profiling
+*   Identifying expensive items, particularly in conjunction with location, could allow a bad actor to determine targets for real-world burglary
+*   Identifying expensive items or currency could allow demographic-based ad targeting
+
+
+###### Compromising Information 
+*   Identifying embarrassing imagery in the user's space might allow a site to embarrass the user
+
+###### Unique Codes
+*   Detecting QR or bar codes in the scene could allow a site to determine the presence of specific objects, or user's location
+
+
+###### Obscuring Real-World Data
+*   Detecting and obscuring certain objects in the user's field of view could pose safety issues for the user. For example, a site might detect stop signs and obscure them.
+
+#### Possible Mitigations for Object Detection
+
+##### Throttling
+
+Limiting the number of objects or images that the site can identify in a given session could help protect the user from broad-ranging attacks.
+
+##### User-Visible Queries
+
+If the user has the ability to visualize what the site is looking for (e.g. the ability to preview reference images), this could help the user ensure that only relevant information to their task is being searched for.
+
+
+##### Limited Location or Tracking
+
+A user agent may choose to prevent a site from accessing specific locations, or the ability to track identified objects. Such limitations could mitigate certain threat vectors (such as identifying the exact configuration of objects). However, even a declarative method (e.g. "place this 3D model on a $100 bill") could allow the site to know that certain objects are in the scene (e.g. when the site knows the model is placed).
+
+
+##### Composition Rules
+
+A user agent or underlying systems could establish rules for how imagery is composited into the user's field of view, to prevent obscuring important objects or critical parts of the user's vision, to ensure user safety.
+
 
 ## Permissions and User Consent
 

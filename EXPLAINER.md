@@ -10,7 +10,7 @@ It is not the purpose of this explainer to prescribe a specific solution. This d
 
 ## Background
 
-Augmented reality systems typically use one or more sensors to infer information about the real world, and may then present information about the real world to the user. In such systems there may be a wide range of input sensor types used, and a range of real-world data generated. Further, other sensors (e.g. the camera) may be accessed and used to render information in context for the user.
+Augmented reality systems typically use one or more sensors to infer information about the real world, and may then present information about the real world to the user. In such systems there may be a wide range of input sensor types used, and a range of real-world data generated. Further, sensors (e.g. the camera) may be accessed and used to render information in context for the user.
 
 
 ## Accessing Real-World Data
@@ -55,9 +55,15 @@ There are wide range of threat vectors relating to site access to real-world geo
 
 
 
-*   Estimating the size of the user's house, to estimate user income
+*   Estimating the size of the user's house, to estimate user income.
 *   User ergonomics may be inferred. For example, users will typically hold phones at the same height, in the same location, and user height may be inferred by identifying the ground plane and the device's relative position to it.
-*   Determine what businesses or apartments the user has visited, if enough real-world geometry is available to create a continuous map segment between the user's current location and other locations
+*   Determine what businesses or apartments the user has visited, if enough real-world geometry is available to create a continuous map segment between the user's current location and other locations.
+*   In combination with other technology such as eye tracking, could allow inference of what the user is interested in or attracted to.
+
+
+###### User Physical Safety
+
+*   The occlusion of real-world objects pose potential threats to users. If a user cannot see a stop sign they might get into a traffic accident; if the user cannot see a chair on the floor they might trip over it. On devices where a site can directly obscure a user's view of the real world, access to real-world geometry may allow sites to identify and occlude objects related to user safety. For example, a site might use real-world geometry to identify the octagonal shape of a stop sign and render an object to occlude it.
 
 
 ##### Precision of Real-World Geometry
@@ -92,6 +98,8 @@ However, it's unclear how much value lowering precision or introducing error wou
 Further, it's not clear what value data throttling would bring. Even a small amount of data can pose a security risk, and without a hard limit on data access, over time a site could gather a large amount of geometry data. For example, if geometry gathering was limited to a user action, sites could design experiences (e.g. games) which solicit frequent user actions to get as much geometry as possible.
 
 In both cases, providing low-resolution or inaccurate data might trade off perceived safety for app quality, but but given the low amount of data necessary to pose a risk it is possible that such an approach would hobble the API (degrade the user experience) without actually making it safer.
+
+A user agent might choose to allow users to explicitly choose the data fidelity available to a site, possibly with a visual indication of what data resolution is being provided, so that the user can estimate both the threats to their privacy as well as the impact on their user experience.
 
 _<span style="color:#24292e;">TODO: Provide examples<span style="color:#24292e;"> of decimated, lower-resolution data sets so the reader can get a feel for what information is actually available at various geometry levels.</span></span>_
 

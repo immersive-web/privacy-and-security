@@ -187,19 +187,84 @@ A user agent or underlying systems could establish rules for how imagery is comp
 
 ### Perception of Camera Access
 
+Augmented reality systems typically enhance some part of the user's field of view, and may either render the camera behind those enhancements (e.g. on a smartphone) or use the camera for visual realism (e.g. refraction). Even if the site cannot access camera data, the _perception_ that the site has access to camera data is a consideration.
+
 #### Threat Vectors
-...
+
+User perception of camera access is an actionable threat vector, even if the site cannot access camera data. Consider the following scenario:
+
+1.  A malicious site could create an AR session that displays camera (and nothing else);
+1.  A smartphone user could visit that site, and be presented with a front-camera view, potentially capturing a compromising situation;
+1.  The user would likely close the camera view, quickly;
+1.  The site could then say "Thank you for that picture! We'll add to the public gallery. Please pay our $10 membership fee to control who can see the picture."
+
+In this case, even if the site does not have access to camera data, it is likely that some percentage of users will be fooled into paying the membership fee. More generally, these threat vectors could be similar to malware which falsely claims that the user agent is compromised.
+
+Such threat vectors could be a concern even on devices without cameras. Consider the following scenario:
+
+1.  The user is using an optically see-through device;
+1.  A malicious 2D web page - without access to camera data - recognizes that it is on an optically see-through device (e.g. detecting through CSS that it is on an additive display);
+1.  The page renders a camcorder viewfinder with a blinking REC indicator in the corner (e.g. on an additive display, the viewfinder could be filled with black pixels, and would thus show the real world). This would make it appear that the web page can record real world imagery, even though it can't.
+
+If not managed properly, the perception of unauthorized camera access could result in a negative perception of the user agent. For example, "Did this browser just give a site access to my camera without permission!?"
+
 #### Possible Mitigations
-...
+
+If the site does not have access to the camera, ideally the user agent will communicate that fact explicitly to the user to mitigate the false perception. Other UX approaches might achieve the same outcome.
+
+Given the threat vectors associated with the perception of camera access, user agents may wish to be explicit about whether a site does or does not have access to camera data (independent of other sensor data)
+
 
 ### Permissions
 
 #### Considerations
-...
+
+It is likely that the user agent will wish to gain user consent, or at least notify the user about what data is being accessed, when entering an web-based augmented reality session. In such sessions, it is possible that the site will have access to one or more sensors and/or one or more types of real world data.
+
+Traditional web permissions could be used to solicit user consent. However, this approach has several considerations:
+
+##### Over-prompting and fatigue
+
+Users that get prompted for permission(s) every time they enter an AR experience could be trained to accept _all_ types of permissions without reading them. For AR in particular, a site may be able to train a user to accept an AR permission and then prompt for (and gain) permanent camera permission without the user reading the prompt or understanding that the camera permission is not related and/or restricted to the AR capabilities.
+
+##### Ambiguity, Complexity
+
+Web permissions may make it difficult to accurately describe what is happening. AR may expose a wide range of data to the site, and it's difficult to describe that data access in a manner that is clear to the user. In some ways, _incomprehensible_ permissions are worse than no permission, and existing permission user experiences are often limited in how much text it can display.
+
+Further, the user may not connect a web permission with the AR session. The current permissions user experience may confuse users who might approve or deny it without realizing that it is a gatekeeper to a camera-based AR experience (i.e. they think it's just another permission).
+
+##### Data access beyond the life of the session
+
+There are [threat vectors](https://github.com/immersive-web/privacy-and-security/issues/6) associated with a site having access to resources after the AR session ends, particularly if those resources are general permissions (e.g. camera), but even the [perception of camera access is a threat vector](https://github.com/immersive-web/privacy-and-security/issues/3), meaning that a long-running AR permission is a potential danger. Web and native permission models have generally included some amount of persistence (either permanent or time-limited) to reduce friction and over-prompting.
+
+Further, it is expected that augmented reality experiences will be desirable for users, and sites can use the incentive of an augmented reality experience to gain consent. Because of this, malicious sites could gain long-running AR permissions for one safe context, and then solicit those users to visit malicious experiences later (where the user may not realize that they've already given permission to the site).
+
+##### Consent vs. Notification
+
+Some augmented reality specifications may support AR sessions where no data is shared with the site. In those situations, user agents may still wish to notify the user what is happening (e.g. a declarative AR API where the site cannot access the [camera](https://github.com/immersive-web/privacy-and-security/issues/3), and the user agent wants to be clear on that point). The existing web permissions model does not support this.
+
+##### User Control
+
+With augmented reality, a user may wish to configure what data is available to the site within a session. For example, the user may wish to allow some level of geometry access, but block the ability to access the camera or the ability to identify specific objects. This type of configuration within the scope of a session is not available with web permissions.
 
 #### Possible Mitigations
-...
 
+There are several approaches that could mitigate the concerns with using web-based permissions:
 
+##### Time-limited permissions
 
+To address concerns about the long-running nature of web permissions, a user agent may wish to time-limit permissions. It is not clear that giving users explicit control would solve this problem, but permissions could be session-based by default. However, this approach may not adequately inform the user as to the connection between the AR session and the granted permission, and may additionally lead to over-prompting and permission fatigue.
 
+##### Augmented Reality Mode
+
+Instead of permissions, an alternative approach could be an explicit "AR Mode" which may ask for user consent before entering, with consent lasting only as long as the page is in this mode (i.e., session).
+
+Such a mode would have the following advantages:
+
+1.  _Flexibility_. The user agent could either ask for consent, or notify the user, or both. A user agent could further choose a UX for this mode allowing presentation of detailed information to the user without the constraints of traditional permissions user experience. This approach also gives the most opportunity to customize the experience across a variety of form factors, some of which may have different data sharing or user interface requirements than others.
+1.  _Clear Scope_. Similar to Full Screen and VR presentation modes, this mode may be clearer to users than permissions that they are entering a specific mode, and there could be clear instructions on how to leave that mode. The origin that has data access during the mode can also be clearly indicated, and the user interface could be clear to the user that they're entering a specific experience, not just giving the site access to some data.
+1.  _Enforcement_. A specific AR mode could enforce data access directly connected to what the user was notified of, and what user consent was provided. This may be less clearly defined with a permission that could (in theory) be requested independent of the actual session creation.
+
+##### Time-limited permissions
+
+To address concerns about the long-running nature of web permissions, a user agent may wish to time-limit permissions. It is not clear that giving users explicit control would solve this problem, but permissions could be session-based by default. However, this approach may not adequately inform the user as to the connection between the AR session and the granted permission, and may additionally lead to over-prompting and permission fatigue.

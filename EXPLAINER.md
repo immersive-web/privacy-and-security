@@ -265,6 +265,3 @@ Such a mode would have the following advantages:
 1.  _Clear Scope_. Similar to Full Screen and VR presentation modes, this mode may be clearer to users than permissions that they are entering a specific mode, and there could be clear instructions on how to leave that mode. The origin that has data access during the mode can also be clearly indicated, and the user interface could be clear to the user that they're entering a specific experience, not just giving the site access to some data.
 1.  _Enforcement_. A specific AR mode could enforce data access directly connected to what the user was notified of, and what user consent was provided. This may be less clearly defined with a permission that could (in theory) be requested independent of the actual session creation.
 
-##### Time-limited permissions
-
-To address concerns about the long-running nature of web permissions, a user agent may wish to time-limit permissions. It is not clear that giving users explicit control would solve this problem, but permissions could be session-based by default. However, this approach may not adequately inform the user as to the connection between the AR session and the granted permission, and may additionally lead to over-prompting and permission fatigue.

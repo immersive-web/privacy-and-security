@@ -1,3 +1,7 @@
+# This repository has been archived
+
+Use [proposals](https://github.com/immersive-web/proposals/) repository of the Immersive Web groups (CG) for new incubation or new idea.
+
 # Immersive Web Privacy and Security
 
 Web applications using immersive APIs may have access to real-world understanding data (e.g. real-world geometry), and may also use the camera or other sensors during scene composition and rendering (e.g. augmented reality on mobile devices). This access (or perceived access) to data presents certain threat vectors to user privacy and security.
